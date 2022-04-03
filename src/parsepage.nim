@@ -31,10 +31,13 @@ proc main(page: string; output: string; selectors: seq[string]) {.async.} =
 
   close client
 
-proc parsepage(pages: seq[string]; outputFile: string; selectors: seq[string]) =
+import pkg/yaml/[toJson]
+import std/json
+
+proc parsepage(config: string) =
   ## Set the `selectors` with the CSS selectors which you want to extract
-  for page in pages:
-    waitFor main(page, outputFile, selectors)
+  let conf = loadToJson(readFile config)[0]
+  echo conf
 
 when isMainModule:
   import cligen

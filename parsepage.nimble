@@ -14,6 +14,7 @@ requires "nim >= 1.7.1"
 requires "cligen"
 requires "useragent"
 requires "scraper"
+requires "yaml"
 
 task buildRelease, "Build release version":
   exec "nimble -d:release build"
