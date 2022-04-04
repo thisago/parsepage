@@ -15,6 +15,9 @@ requires "cligen"
 requires "useragent"
 requires "scraper"
 requires "yaml"
+requires "nimquery"
+requires "fsafename"
+requires "karax"
 
 task buildRelease, "Build release version":
   exec "nimble -d:release build"
