@@ -1,5 +1,6 @@
 outDir: "out"
 pages:
+  - https://godownloads.net/triune-digital-electric-pack-download/
   - https://godownloads.net/30-grunge-cardboard-photoshop-brushes-free-download/
   # - https://godownloads.net/nude-neutral-modern-procreate-color-ipad-free-download/
   # - https://godownloads.net/forest-tales-procreate-brushes-free-download/
@@ -34,4 +35,6 @@ pages:
   # - https://godownloads.net/videohive-ramadan-openers-davinci-resolve-36474047-free-download/
 
 extract:
-  - .post-title h3>a[href]
+  title: .post-title h3>a[href]
+  links: .col-md-12.post-block>div:nth-child(3)>div:nth-child(7)
+  description: .the-content-container
