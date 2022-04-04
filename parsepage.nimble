@@ -10,7 +10,7 @@ bin           = @["parsepage"]
 
 # Dependencies
 
-requires "nim >= 1.7.1"
+requires "nim >= 1.6.4"
 requires "cligen"
 requires "useragent"
 requires "scraper"
