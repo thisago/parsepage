@@ -1,20 +1,38 @@
 import pkg/yaml/[toJson]
 import std/asyncdispatch
 from std/httpclient import newAsyncHttpClient, newHttpHeaders, getContent, close
-from std/strutils import find, split, replace
-from std/json import `{}`, keys, getStr, to
-from std/os import createDir, `/`
+from std/strutils import find, split, replace, multiReplace, parseInt
+from std/json import `{}`, keys, getStr, to, `$`
+import std/jsonutils
+from std/os import createDir, `/`, sleep
 from std/htmlparser import parseHtml
 from std/xmltree import `$`
 from std/uri import parseUri
 from std/strformat import fmt
 from std/cgi import xmlEncode
 from std/base64 import encode
+from std/random import randomize, rand
 
 from pkg/nimquery import querySelectorAll
 from pkg/useragent import mozilla
 from pkg/fsafename import safename
-import pkg/karax/[karaxdsl, vdom, vstyles]
+import pkg/karax/[karaxdsl, vdom, vstyles, vdom]
+from pkg/css_html_minify import nil
+
+proc minifyHtml(html: string): string =
+  result = css_html_minify.minifyHtml(html).multiReplace({
+    " <": "<",
+    "> ": ">",
+    "  ": " ",
+  })
+
+proc xmlDecode(s: string): string {.inline.} =
+  result = s.multiReplace({
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": "\""
+  })
 
 proc extract(html: string; selectors: seq[string]): seq[string] =
   # let xml = parseHtml html
@@ -35,6 +53,10 @@ type
     pages: seq[string]
     extract: seq[tuple[key, selector: string]] ## CSS Selectors
     outDir: string
+    timeout: tuple[min, max: int]
+  ExtractedResult* = ref object
+    url: string
+    extracted: seq[tuple[name, html: string]]
 
 let footer = buildHtml(footer):
   p:
@@ -43,15 +65,35 @@ let footer = buildHtml(footer):
       referrerpolicy = "no-referrer", rel = "external"): text "parsepage"
 
 proc main(conf: Config) {.async.} =
-  var files: seq[string]
-  for url in conf.pages:
+  randomize()
+  var
+    files: seq[string]
+    extractedPages: seq[ExtractedResult]
+  for i, url in conf.pages:
+    if i > 0:
+      let ms = rand(conf.timeout.min..conf.timeout.max)
+      echo fmt"Sleeping {ms}ms"
+      sleep ms
+
+    var extractedPage = new ExtractedResult
+    extractedPage.url = url
+    proc ads(a,b: string): VNode =
+      extractedPage.extracted.add (a,b)
+      result = newVNode VNodeKind.verbatim
     echo url
     let
       client = newAsyncHttpClient(headers = newHttpHeaders({
-        "User-Agent": mozilla
+        "user-agent": mozilla,
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        # "accept-encoding": "gzip, deflate, br",
+        "accept-language": "en-US,en;q=0.9",
+        "cache-control": "max-age=0",
+        "service-worker-navigation-preload": "true",
+        "upgrade-insecure-requests": "1"
       }))
       html = parseHtml await client.getContent url
     close client
+
     createDir conf.outDir
     let res = buildHtml(main):
       link(rel = "stylesheet", href = "https://unpkg.com/mvp.css")
@@ -66,7 +108,8 @@ proc main(conf: Config) {.async.} =
             sup: text selector
             # h2: text selector
             for el in html.querySelectorAll selector:
-              let code = $el
+              let code = xmlDecode $el
+              ads(name, code)
               pre:
                 a(href = "https://code.ozzuu.com/#" & encode code,
                   target = "_blank", referrerpolicy = "no-referrer",
@@ -75,10 +118,16 @@ proc main(conf: Config) {.async.} =
                 code: text code
           hr()
         footer
+    var filename = parseUri(url).path[1..^1].replace("/", "-")
+    if filename[^1] == '-':
+      filename = filename[0..^2]
     let outFile =
-      safename parseUri(url).path[1..^2].replace("/", "-") & ".html"
+      safename filename & ".html"
     files.add outFile
-    writeFile(conf.outDir / outFile, $res)
+    writeFile(conf.outDir / outFile, minifyHtml $res)
+    extractedPages.add extractedPage
+  writeFile(conf.outDir / "data.json", $extractedPages.toJson)
+
   let indexContent = buildHtml(main):
     section: tdiv:
       link(rel = "stylesheet", href = "https://unpkg.com/mvp.css")
@@ -86,7 +135,7 @@ proc main(conf: Config) {.async.} =
       for file in files:
         li: a(href = file): text file
       footer
-  writeFile(conf.outDir / "index.html", $indexContent)
+  writeFile(conf.outDir / "index.html", minifyHtml $indexContent)
     
 
 proc parsepage(config: string) =
@@ -98,6 +147,17 @@ proc parsepage(config: string) =
   let extract = node{"extract"}
   for key in extract.keys:
     conf.extract.add (key, extract{key}.getStr)
+  block timeout:
+    let
+      str = node{"timeout"}.getStr
+      parts = str.split "-"
+    if parts.len == 2:
+      conf.timeout.min = parseInt parts[0] 
+      conf.timeout.max = parseInt parts[1] 
+    else:
+      conf.timeout.min = parseInt str 
+      conf.timeout.max = conf.timeout.min
+
   waitFor main conf
 
 when isMainModule:

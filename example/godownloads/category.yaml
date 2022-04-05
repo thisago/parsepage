@@ -1,0 +1,14 @@
+outDir: "out"
+timeout: 100-1000
+extract:
+  products: .col-md-12>.post h3>a
+
+pages:
+  - https://godownloads.net/category/software/windows/3d-cad/page/1/
+  # - https://godownloads.net/category/software/windows/3d-cad/page/2/
+  # - https://godownloads.net/category/software/windows/3d-cad/page/3/
+  # - https://godownloads.net/category/software/windows/3d-cad/page/4/
+  # - https://godownloads.net/category/software/windows/3d-cad/page/5/
+  # - https://godownloads.net/category/software/windows/3d-cad/page/6/
+  # - https://godownloads.net/category/software/windows/3d-cad/page/7/
+  # - https://godownloads.net/category/software/windows/3d-cad/page/8/

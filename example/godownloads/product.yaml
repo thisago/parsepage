@@ -1,0 +1,21 @@
+outDir: "out"
+timeout: 100-1000
+extract:
+  title: .post-title h3>a[href]
+  links: .col-md-12.post-block>div:nth-child(3)>div:nth-child(7)
+  description: .the-content-container
+
+pages:
+  - https://godownloads.net/triune-digital-electric-pack-download/
+  - https://godownloads.net/30-grunge-cardboard-photoshop-brushes-free-download/
+  - https://godownloads.net/nude-neutral-modern-procreate-color-ipad-free-download/
+  - https://godownloads.net/forest-tales-procreate-brushes-free-download/
+  - https://godownloads.net/natural-procreate-brushes-free-download/
+  - https://godownloads.net/150-dinosaur-procreate-stamps-set-free-download/
+  - https://godownloads.net/creativemarket-national-park-stamp-6665068-free-download/
+  - https://godownloads.net/flowers-and-leaves-photoshop-brushes-free-download/
+  - https://godownloads.net/videohive-claps-dynamic-urban-opener-36946736-free-download/
+  - https://godownloads.net/videohive-liquid-stickers-for-davinci-resolve-36976042-free-download/
+  - https://godownloads.net/videohive-razor-glitch-titles-36929303-free-download/
+  - https://godownloads.net/videohive-social-mediatik-tokdav-36948751-free-downloaad/
+  - https://godownloads.net/videohive-colorful-shape-transitions-davinci-resolve-36949913-free-download/

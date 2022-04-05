@@ -1,0 +1,7 @@
+outDir: out
+timeout: 100-1000
+extract:
+  ytInitialPlayerResponse: script:nth-child(3)
+
+pages:
+  - https://www.youtube.com/watch?v=dyiOqxC017o&t=36s

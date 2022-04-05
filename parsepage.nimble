@@ -1,6 +1,6 @@
 # Package
 
-version       = "1.1.0"
+version       = "1.2.0"
 author        = "Luciano Lorenzo"
 description   = "Automatically extracts the data of sites"
 license       = "GPL-3.0-only"
@@ -21,6 +21,7 @@ requires "cligen"
 requires "karax"
 requires "nimquery"
 requires "yaml"
+requires "css_html_minify"
 
 task buildRelease, "Build release version":
   exec "nimble -d:release build"
