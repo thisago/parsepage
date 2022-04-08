@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.2.1 (2022/04/08)
+
+- Title is not a link anymore and the link is below
+
+---
+
 ## Version 1.2.0 (2022/04/05)
 
 - Decoded extracted HTML

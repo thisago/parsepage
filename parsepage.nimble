@@ -1,6 +1,6 @@
 # Package
 
-version       = "1.2.0"
+version       = "1.2.1"
 author        = "Luciano Lorenzo"
 description   = "Automatically extracts the data of sites"
 license       = "GPL-3.0-only"

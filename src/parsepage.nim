@@ -98,9 +98,9 @@ proc main(conf: Config) {.async.} =
     let res = buildHtml(main):
       link(rel = "stylesheet", href = "https://unpkg.com/mvp.css")
       header:
-        h1:
-          a(href = url, referrerpolicy = "no-referrer", rel = "external"):
-            text url
+        h1: text url
+        a(href = url, referrerpolicy = "no-referrer", rel = "external"):
+          text "Go to page"
       section:
         for (name, selector) in conf.extract:
           tdiv:
