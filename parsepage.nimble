@@ -1,7 +1,7 @@
 # Package
 
 version       = "1.2.1"
-author        = "Luciano Lorenzo"
+author        = "Thiago Navarro"
 description   = "Automatically extracts the data of sites"
 license       = "GPL-3.0-only"
 srcDir        = "src"
